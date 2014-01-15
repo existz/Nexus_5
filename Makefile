@@ -566,14 +566,14 @@ all: vmlinux
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 #we want all warnings to be seen and fixed
-#KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
-KBUILD_CFLAGS	+= -Os
+KBUILD_CFLAGS	+= -Os -Wno-maybe-uninitialized -Wno-unused-function -Wno-unused-variable
+#KBUILD_CFLAGS	+= -Os
 endif
 ifdef CONFIG_CC_OPTIMIZE_DEFAULT
-KBUILD_CFLAGS	+= -O2
+KBUILD_CFLAGS	+= -O2 -Wno-maybe-uninitialized -Wno-unused-function -Wno-unused-variable
 endif
 ifdef CONFIG_CC_OPTIMIZE_ALOT
-KBUILD_CFLAGS	+= -O3
+KBUILD_CFLAGS	+= -O3 -Wno-maybe-uninitialized -Wno-unused-function -Wno-unused-variable
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
