@@ -184,8 +184,8 @@ echo "[BUILD]: Cleaning kernel (make mrproper)...";
 make mrproper
 echo "[BUILD]: Using defconfig: $DEFCONFIG...";
 make $DEFCONFIG
-echo "[BUILD]: Changing CONFIG_LOCALVERSION to: -bricked-"$CODENAME"-"$BRANCH" ...";
-sed -i "/CONFIG_LOCALVERSION=\"/c\CONFIG_LOCALVERSION=\"-bricked-"$CODENAME"-"$BRANCH"\"" .config
+echo "[BUILD]: Changing CONFIG_LOCALVERSION to: -axdev-"$CODENAME"-"$BRANCH" ...";
+sed -i "/CONFIG_LOCALVERSION=\"/c\CONFIG_LOCALVERSION=\"-axdev-"$CODENAME"-"$BRANCH"\"" .config
 
 #kcontrol necessities
 if [ $(cat .config | grep 'CONFIG_ARCH_MSM=y' | tail -n1) == "CONFIG_ARCH_MSM=y" ]; then
@@ -258,16 +258,16 @@ if [[ ! $OUT_ENABLED -eq 0 ]]; then
     gotoout
 
     #create zip and clean folder
-    echo "[BUILD]: Creating zip: bricked_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip ...";
-    zip -r bricked_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip . -x "*.zip" "*.sha1" "*.md5"
+    echo "[BUILD]: Creating zip: axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip ...";
+    zip -r axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip . -x "*.zip" "*.sha1" "*.md5"
     echo "[BUILD]: Cleaning out directory...";
     find $OUT_DIR/* -maxdepth 0 ! -name '*.zip' ! -name '*.md5' ! -name '*.sha1' ! -name out -exec rm -rf '{}' ';'
     echo "[BUILD]: Done!...";
 
     if [ ! $USECHKS -eq 0 ]; then
         echo "[BUILD]: Creating sha1 & md5 sums...";
-        md5sum bricked_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip > bricked_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.md5
-        sha1sum bricked_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip > bricked_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.sha1
+        md5sum axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip > axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.md5
+        sha1sum axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip > axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.sha1
     fi
 
     if [ ! $USEFTP -eq 0 ]; then
@@ -306,9 +306,9 @@ echo "[BUILD]: Uploading files to $HOST...";
 ftp -inv $HOST << End-Of-Session
 user $USER $PASS
 cd /$CODENAME/$BRANCH/
-put bricked_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip
-put bricked_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.md5
-put bricked_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.sha1
+put axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip
+put axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.md5
+put axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.sha1
 bye
 End-Of-Session
     fi
