@@ -211,17 +211,25 @@ echo "[BUILD]: Done with kernel!...";
 # BUILD KCONTROL
 #done building, lets build kcontrol modulesa
 echo "[BUILD]: Initializing directories for KControl modules...";
-rm -rf kcontrol
-mkdir kcontrol
-gotokcontrol
-#gpu
-echo "[BUILD]: Cloning KControl msm gpu module source...";
-if [ $DEVARCH == "msm" ]; then
-    git clone https://git.bricked.de/kcontrol/kcontrol_gpu_msm.git
-elif  [ $DEVARCH == "tegra" ]; then
-    git clone https://git.bricked.de/kcontrol/kcontrol_gpu_tegra.git
+if [ -d $SOURCE_DIR/kcontrol/kcontrol_gpu_$DEVARCH ]; then
+    gotokcontrolgpu
+    if [ $DEVARCH == "msm" ]; then
+        git pull https://git.bricked.de/kcontrol/kcontrol_gpu_msm.git master
+    elif  [ $DEVARCH == "tegra" ]; then
+        git pull https://git.bricked.de/kcontrol/kcontrol_gpu_tegra.git master
+    fi
+else
+    mkdir kcontrol
+    gotokcontrol
+    #gpu
+    echo "[BUILD]: Cloning KControl msm gpu module source...";
+    if [ $DEVARCH == "msm" ]; then
+        git clone https://git.bricked.de/kcontrol/kcontrol_gpu_msm.git
+    elif  [ $DEVARCH == "tegra" ]; then
+        git clone https://git.bricked.de/kcontrol/kcontrol_gpu_tegra.git
+    fi
+    gotokcontrolgpu
 fi
-gotokcontrolgpu
 echo "[BUILD]: Updating KERNEL_BUILD inside the Makefile...";
 sed -i '/KERNEL_BUILD := /c\KERNEL_BUILD := ../../' Makefile
 echo "[BUILD]: Building KControl $DEVARCH gpu module...";
