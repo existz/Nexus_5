@@ -28,7 +28,7 @@ PASS='pass'
 
 #if we are not called with an argument, default to branch master
 if [ -z "$1" ]; then
-  BRANCH="master"
+  BRANCH="kk_mr1-bricked"
   echo "[BUILD]: WARNING: Not called with branchname, defaulting to $BRANCH!";
   echo "[BUILD]: If this is not what you want, call this script with the branchname.";
 else
