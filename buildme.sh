@@ -106,13 +106,15 @@ if [ ! -d "$TOOLCHAIN_D" ]; then
 fi
 if [ ! -d "$TOOLCHAIN_D/android-toolchain-eabi" ]; then
     gototoolchaind
-#    wget http://bricked.de/downloads/android-toolchain-eabi-4.8-2014.03-x86.tar.bz2
-    wget http://bricked.de/downloads/android-toolchain-eabi.zip
-    echo "[BUILD]: Extracting...";
-    unzip android-toolchain-eabi.zip
-    rm android-toolchain-eabi.zip
-#    tar jxf android-toolchain-eabi-4.8-2014.03-x86.tar.bz2
-#    rm -f android-toolchain-eabi-4.8-2014.03-x86.tar.bz2
+    if [ $CROSSCC == "arm-eabi-" ]; then
+        git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8 android-toolchain-eabi;
+    elif [ $CROSSCC == "arm-linux-androideabi-" ]; then
+        git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.8 android-toolchain-eabi;
+    else
+        echo "[ERROR]: Must use a valid toolchain triplet" && exit 0;
+    fi
+else
+    echo "[BUILD]: Toolchain found, skipping download";
 fi
 
 #check ccache configuration
