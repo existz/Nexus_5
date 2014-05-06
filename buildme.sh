@@ -27,12 +27,14 @@ USER="user"
 PASS='pass'
 
 #if we are not called with an argument, default to branch master
-if [ -z "$1" ]; then
-  BRANCH="kk_mr1-bricked"
+if [[ -z "$1" || "$1" == "clean" ]]; then
+  BRANCH="kk_mr1-bricked";
+  CLEAN_BUILD=$1;
   echo "[BUILD]: WARNING: Not called with branchname, defaulting to $BRANCH!";
   echo "[BUILD]: If this is not what you want, call this script with the branchname.";
 else
   BRANCH=$1;
+  CLEAN_BUILD=$2;
 fi
 
 echo "[BUILD]: ####################################";
@@ -181,9 +183,17 @@ echo "[BUILD]: Saved current hash as revision: $REV...";
 DATE=$(date +%Y%m%d_%H%M%S)
 echo "[BUILD]: Start of build: $DATE...";
 
-#build the kernel
-echo "[BUILD]: Cleaning kernel (make mrproper)...";
-make mrproper
+#allow clean or dirty build time options
+case $CLEAN_BUILD in
+    clean)
+        echo "[BUILD]: Cleaning kernel (make mrproper)...";
+        make mrproper;
+        ;;
+    *)
+        echo "[BUILD]: Building a dirty kernel...";
+        ;;
+esac
+
 echo "[BUILD]: Using defconfig: $DEFCONFIG...";
 make $DEFCONFIG
 echo "[BUILD]: Changing CONFIG_LOCALVERSION to: -axdev-"$CODENAME"-"$BRANCH" ...";
