@@ -52,7 +52,7 @@ static void msm_sleeper_resume(void)
 	}
 	limit_set = 0;
 
-	return; 
+	return;
 }
 
 static int lcd_notifier_callback(struct notifier_block *this,
