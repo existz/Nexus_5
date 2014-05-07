@@ -183,6 +183,8 @@ void __init msm8974_add_drivers(void)
 	tsens_tm_init_driver();
 #ifdef CONFIG_BRICKED_THERMAL
 	msm_thermal_init(&msm_thermal_pdata);
+#elif CONFIG_INTELLI_THERMAL
+	msm_thermal_init(NULL);
 #else
 	msm_thermal_device_init();
 #endif

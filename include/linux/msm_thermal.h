@@ -61,7 +61,7 @@ struct msm_thermal_stat {
 };
 #endif
 
-#ifdef CONFIG_THERMAL_MONITOR
+#if defined(CONFIG_THERMAL_MONITOR) || defined(CONFIG_INTELLI_THERMAL)
 extern int msm_thermal_init(struct msm_thermal_data *pdata);
 #ifndef CONFIG_BRICKED_THERMAL
 extern int msm_thermal_device_init(void);
