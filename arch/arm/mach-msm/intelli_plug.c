@@ -174,7 +174,7 @@ static unsigned int calculate_thread_stats(void)
 	return nr_run;
 }
 
-static void __cpuinit intelli_plug_boost_fn(struct work_struct *work)
+static void intelli_plug_boost_fn(struct work_struct *work)
 {
 
 	int nr_cpus = num_online_cpus();
@@ -183,7 +183,7 @@ static void __cpuinit intelli_plug_boost_fn(struct work_struct *work)
 		cpu_up(1);
 }
 
-static void __cpuinit intelli_plug_work_fn(struct work_struct *work)
+static void intelli_plug_work_fn(struct work_struct *work)
 {
 	unsigned int nr_run_stat;
 	unsigned int cpu_count = 0;
@@ -320,7 +320,7 @@ static void intelli_plug_suspend(struct power_suspend *handler)
 	}
 }
 
-static void __cpuinit intelli_plug_resume(struct power_suspend *handler)
+static void intelli_plug_resume(struct power_suspend *handler)
 {
 	int num_of_active_cores;
 	int i;
