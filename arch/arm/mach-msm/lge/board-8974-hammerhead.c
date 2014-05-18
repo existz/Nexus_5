@@ -181,9 +181,9 @@ void __init msm8974_add_drivers(void)
 	krait_power_init();
 	msm_clock_init(&msm8974_clock_init_data);
 	tsens_tm_init_driver();
-#ifdef CONFIG_BRICKED_THERMAL
+#if defined(CONFIG_BRICKED_THERMAL)
 	msm_thermal_init(&msm_thermal_pdata);
-#elif CONFIG_INTELLI_THERMAL
+#elif defined(CONFIG_INTELLI_THERMAL)
 	msm_thermal_init(NULL);
 #else
 	msm_thermal_device_init();
