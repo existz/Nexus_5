@@ -1,9 +1,7 @@
 #!/bin/bash
 #switches
-USEAROMA=0;
 USEPREBUILT=1;
 USECHKS=1;
-USEFTP=0;
 #sourcedir
 SOURCE_DIR="$(pwd)"
 #crosscompile stuff
@@ -19,22 +17,19 @@ USERCCDIR="$HOME/.ccache"
 CODENAME="hammerhead"
 DEFCONFIG="bricked_defconfig"
 NRJOBS=$(( $(nproc) * 2 ))
-#ftpstuff
-RETRY="60s";
-MAXCOUNT=30;
-HOST="host.com"
-USER="user"
-PASS='pass'
 
-#if we are not called with an argument, default to branch master
+#Allow switching branches when specified
 if [[ -z "$1" || "$1" == "clean" ]]; then
-  BRANCH="kk_mr1-bricked";
+  BRANCH=$(git name-rev --name-only HEAD);
   CLEAN_BUILD=$1;
   echo "[BUILD]: WARNING: Not called with branchname, defaulting to $BRANCH!";
   echo "[BUILD]: If this is not what you want, call this script with the branchname.";
 else
   BRANCH=$1;
   CLEAN_BUILD=$2;
+  echo "[BUILD]: Checking out branch: $BRANCH...";
+  git clean -f -d;
+  git checkout $BRANCH;
 fi
 
 echo "[BUILD]: ####################################";
@@ -42,11 +37,6 @@ echo "[BUILD]: ####################################";
 echo "[BUILD]: Building branch: $BRANCH";
 echo "[BUILD]: ####################################";
 echo "[BUILD]: ####################################";
-
-#Checking out latest upstream changes
-echo "[BUILD]: Checking out branch: $BRANCH...";
-git clean -f -d
-git checkout $BRANCH
 
 OUT_ENABLED=1;
 if [ ! -d "$OUT_DIR" ]; then
@@ -260,12 +250,7 @@ if [[ ! $OUT_ENABLED -eq 0 ]]; then
             cp -R $PREBUILT/* $OUT_DIR/
         fi
     fi
-    if [ ! $USEAROMA -eq 0 ]; then
-        echo "[BUILD]: Changing aroma version/data/device to: $BRANCH-$REV/$DATE/$CODENAME...";
-        sed -i "/ini_set(\"rom_version\",/c\ini_set(\"rom_version\", \""$BRANCH-$REV"\");" $OUT_DIR/META-INF/com/google/android/aroma-config
-        sed -i "/ini_set(\"rom_date\",/c\ini_set(\"rom_date\", \""$DATE"\");" $OUT_DIR/META-INF/com/google/android/aroma-config
-        sed -i "/ini_set(\"rom_device\",/c\ini_set(\"rom_device\", \""$CODENAME"\");" $OUT_DIR/META-INF/com/google/android/aroma-config
-    fi
+
     gotosource
 
     #copy stuff for our zip
@@ -288,49 +273,6 @@ if [[ ! $OUT_ENABLED -eq 0 ]]; then
         echo "[BUILD]: Creating sha1 & md5 sums...";
         md5sum axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip > axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.md5
         sha1sum axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip > axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.sha1
-    fi
-
-    if [ ! $USEFTP -eq 0 ]; then
-        echo "[BUILD]: Testing connection to $HOST...";
-        SUCCESS=0;
-        ZERO=0;
-        COUNT=0;
-        while [ $SUCCESS -eq $ZERO ]
-        do
-            COUNT=$(($COUNT + 1));
-            if [ $COUNT -eq $MAXCOUNT ]; then
-                return 1;
-            fi
-            ping -c1 $HOST
-            case "$?" in
-                0)
-                echo "[BUILD]: $HOST is online, continuing...";
-                SUCCESS=1 ;;
-                1)
-                echo "[BUILD]: Packet Loss while pinging $HOST. Retrying in $RETRY!";
-                sleep $RETRY ;;
-                2)
-                echo "[BUILD]: $HOST is unknown (offline). Retrying in $RETRY!";
-                sleep $RETRY ;;
-                *)
-                echo "[BUILD]: Some unknown error occured while trying to connect to $HOST. Retrying in $RETRY seconds!";
-                sleep $RETRY ;;
-            esac
-        done
-
-echo "[BUILD]: Uploading files to $HOST...";
-# Uses the ftp command with the -inv switches.
-#  -i turns off interactive prompting
-#  -n Restrains FTP from attempting the auto-login feature
-#  -v enables verbose and progress
-ftp -inv $HOST << End-Of-Session
-user $USER $PASS
-cd /$CODENAME/$BRANCH/
-put axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip
-put axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.md5
-put axdev_"$CODENAME"_"$DATE"_"$BRANCH"-"$REV".zip.sha1
-bye
-End-Of-Session
     fi
 fi
 
