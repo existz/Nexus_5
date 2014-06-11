@@ -124,7 +124,10 @@ if [ ! -d "$TOOLCHAIN_CCACHE" ]; then
     chmod -R 777 bin-ccache
     echo "[BUILD]: CCACHE: Done...";
 fi
-export CCACHE_DIR=$USERCCDIR
+export USE_CCACHE=1;
+export CCACHE_DIR=$USERCCDIR;
+export CCACHE_COMPILERCHECK=content;
+export CCACHE_SLOPPINESS=time_macros,include_file_mtime,file_macro;
 ###CCACHE CONFIGURATION ENDS HERE, DO NOT MESS WITH IT!!!
 
 echo "[BUILD]: Setting cross compile env vars...";
