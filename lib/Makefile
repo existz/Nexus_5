@@ -20,9 +20,6 @@ lib-$(CONFIG_SMP) += cpumask.o
 
 lib-y	+= kobject.o klist.o
 
-# Compile with Os to fix build errors
-CFLAGS_bitmap.o += -Os
-
 obj-y += bcd.o div64.o sort.o parser.o halfmd4.o debug_locks.o random32.o \
 	 bust_spinlocks.o hexdump.o kasprintf.o bitmap.o scatterlist.o \
 	 string_helpers.o gcd.o lcm.o list_sort.o uuid.o flex_array.o \
